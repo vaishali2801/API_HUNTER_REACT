@@ -1,0 +1,93 @@
+//formik & yup
+import * as formik from 'formik';
+//react bootstrap
+import { Button, Col, Form, Row } from "react-bootstrap"
+//components
+import { UpdateStudent } from "../api/StudentAxios";
+//react-router-dom
+import { useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
+
+function EditStudent() {
+    const { Formik } = formik;
+
+    const navigate = useNavigate();
+    const { state } = useLocation();
+
+    if (!state) return <h3>No student data found</h3>;
+
+    const studentId = state._id;
+
+    return (
+        <Formik
+            onSubmit={async (values, { resetForm }) => {
+                try {
+                    const data = await UpdateStudent(studentId, values);
+
+                    navigate("/");
+
+                    alert("Student edited Successfully");
+
+                    resetForm();
+                } catch (err) {
+                    alert(err.message);
+                }
+            }}
+            initialValues={{
+                firstName: state?.firstName || "",
+                lastName: state?.lastName || "",
+                phoneNumber: state?.phoneNumber || "",
+                
+            }}
+        >
+            {({ handleSubmit, handleChange, values, touched, errors }) => (
+                <Form noValidate onSubmit={handleSubmit}>
+                    <Row className="mb-3">
+                        <Form.Group as={Col} md="4" controlId="validationFormik01">
+                            <Form.Label>First name</Form.Label>
+                            <Form.Control
+                                type="text"
+                                name="firstName"
+                                value={values.firstName}
+                                onChange={handleChange}
+                                isValid={touched.firstName && !errors.firstName}
+                            />
+                            <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
+                        </Form.Group>
+                        <Form.Group as={Col} md="4" controlId="validationFormik02">
+                            <Form.Label>Last name</Form.Label>
+                            <Form.Control
+                                type="text"
+                                name="lastName"
+                                value={values.lastName}
+                                onChange={handleChange}
+                                isValid={touched.lastName && !errors.lastName}
+                            />
+
+                            <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
+                        </Form.Group>
+                    </Row>
+                    <Row className="mb-3">
+                        <Form.Group as={Col} md="3" controlId="validationFormik04">
+                            <Form.Label>phoneNumber</Form.Label>
+                            <Form.Control
+                                type="text"
+                                placeholder="enter phoneNumber"
+                                name="phoneNumber"
+                                value={values.phoneNumber}
+                                onChange={handleChange}
+                                isInvalid={!!errors.phoneNumber}
+                            />
+                            <Form.Control.Feedback type="invalid">
+                                {errors.phoneNumber}
+                            </Form.Control.Feedback>
+                        </Form.Group>
+                    </Row>
+                    <Button type="submit">Update</Button>
+                </Form>
+            )}
+        </Formik>
+    );
+}
+
+export default EditStudent;
