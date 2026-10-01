@@ -6,7 +6,7 @@ import { Button, Col, Form, Row } from "react-bootstrap"
 import { AddStudents } from "../api/StudentAxios";
 import { useNavigate } from "react-router-dom";
 //validation
-import StudentValidation from '../validation/studentValidation';
+import StudentValidation from '../validation/StudentValidation';
 
 function AddStudent() {
     const { Formik } = formik;
